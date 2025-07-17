@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200">
+  <!-- Soccer Ball -->
+  <circle cx="100" cy="100" r="70" fill="#0a2342" />
+  <path d="M100,30 L130,50 L120,85 L80,85 L70,50 Z" fill="white" />
+  <path d="M70,50 L40,70 L50,110 L80,85 Z" fill="white" />
+  <path d="M50,110 L70,150 L120,150 L80,85 Z" fill="white" />
+  <path d="M120,150 L160,120 L120,85 Z" fill="white" />
+  <path d="M160,120 L150,70 L120,85 Z" fill="white" />
+  <path d="M150,70 L130,50 L120,85 Z" fill="white" />
+  
+  <!-- Pulse Line -->
+  <path d="M30,150 L70,150 L85,100 L100,130 L115,90 L130,150 L170,150" stroke="#e63946" stroke-width="10" fill="none" />
+  
+  <!-- Text -->
+  <text x="200" y="100" font-family="Arial, sans-serif" font-size="70" font-weight="bold">
+    <tspan fill="#0a2342">Kora</tspan><tspan fill="#e63946">Pulse</tspan>
+  </text>
+  
+  <!-- Tagline -->
+  <text x="200" y="150" font-family="Arial, sans-serif" font-size="30" fill="#0a2342" font-weight="bold">Live. Stats. Results.</text>
+</svg>
