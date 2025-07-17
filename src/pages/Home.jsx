@@ -94,10 +94,10 @@ const Home = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#181818] text-white font-sans" dir="rtl">
-      <main className="flex-1 flex flex-col items-center px-2 md:px-4 py-8 gap-8">
+      <main className="flex-1 flex flex-col items-center px-1 xs:px-2 md:px-4 py-4 xs:py-6 md:py-8 gap-4 xs:gap-6 md:gap-8">
         <HeroSection />
         {/* تبويبات الأيام + اختيار التاريخ */}
-        <section className="w-full max-w-5xl mb-2">
+        <section className="w-full max-w-5xl mb-1 xs:mb-2">
           <TabsWithDate
             selectedDate={selectedDate}
             onDateChange={handleDateChange}
@@ -110,12 +110,14 @@ const Home = () => {
         </section>
         {/* رأس الدوري + قائمة المباريات */}
         <section className="w-full max-w-5xl">
-          <div className="rounded-2xl bg-[#23272f] shadow-md p-4 flex flex-col gap-4 border-2 border-[#0a2342]">
-            <h2 className="text-2xl font-bold mb-2 text-right" style={{color: '#e63946'}}>مباريات اليوم</h2>
+          <div className="rounded-2xl bg-[#23272f] shadow-md p-2 xs:p-4 flex flex-col gap-3 xs:gap-4 border-2 border-[#0a2342]">
+            <h2 className="text-xl xs:text-2xl font-bold mb-1 xs:mb-2 text-right" style={{color: '#e63946'}}>
+              مباريات اليوم
+            </h2>
             {fixturesLoading && <div>جاري التحميل...</div>}
             {!fixturesLoading && filteredGroupedLeagues.length === 0 && <div>لا توجد مباريات اليوم</div>}
             {!fixturesLoading && filteredGroupedLeagues.map(group => (
-              <div key={group.league.id} className="mb-6">
+              <div key={group.league.id} className="mb-4 xs:mb-6">
                 <LeagueHeader league={group.league} />
                 <div>
                   {group.fixtures.map(fixture => (
