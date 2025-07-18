@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { useFootballStore } from "../store/football";
+import { useFootballStore } from "../../store/football.js";
 import DefaultPlayerIcon from "./DefaultPlayerIcon";
 import InlineFieldView from "./InlineFieldView";
 
 const LineupView = ({ lineup }) => {
-  const { players, fixtureEvents, fetchFixtureEvents } = useFootballStore();
+  const { players, fixtureEvents, fetchFixtureEvents, fetchPlayerProfile } = useFootballStore();
 
   // Fetch player-specific events for substitutes
   useEffect(() => {
@@ -19,6 +19,24 @@ const LineupView = ({ lineup }) => {
       }
     });
   }, [lineup, fetchFixtureEvents]);
+
+  // Fetch missing substitute player photos (like startXI)
+  useEffect(() => {
+    if (!lineup || lineup.length === 0) return;
+    lineup.forEach(team => {
+      if (team.substitutes) {
+        team.substitutes.forEach(p => {
+          if (
+            !p.player.photo &&
+            p.player.id &&
+            (!players[p.player.id] || (!players[p.player.id].profile && !players[p.player.id].loading))
+          ) {
+            fetchPlayerProfile(p.player.id);
+          }
+        });
+      }
+    });
+  }, [lineup, players, fetchPlayerProfile]);
 
   // Helper to get events for a specific player in this match
   const getPlayerEvents = (playerId, fixtureId) => {
@@ -52,7 +70,7 @@ const LineupView = ({ lineup }) => {
 
   if (!lineup || lineup.length === 0) return <div className="text-center text-gray-400">التشكيلة غير متوفرة</div>;
   return (
-    <div className="flex flex-col md:flex-row gap-6 justify-between items-start w-full">
+    <div className="flex flex-col md:flex-row gap-6 justify-between items-start w-full" dir="rtl">
       {lineup.map((team, idx) => (
         <div
           key={team.team.id || idx}
@@ -64,12 +82,8 @@ const LineupView = ({ lineup }) => {
 
             {/* Coach Section */}
             {team.coach && (
-              <div className="flex items-center justify-end gap-2 w-full bg-[#2a2f38] rounded-lg px-5 py-3 border border-[#3a3f48]">
-                <div className="flex flex-col items-end">
-                  <span className="text-xs text-gray-400">المدرب</span>
-                  <span className="text-white text-sm font-semibold">{team.coach.name}</span>
-                </div>
-                <div className="w-14 h-14 rounded-full border border-white overflow-hidden bg-gray-300 flex items-center justify-center">
+              <div className="flex items-center justify-between gap-2 w-full bg-[#2a2f38] rounded-lg px-5 py-3 border border-[#3a3f48]" dir="rtl">
+                <div className="w-14 h-14 rounded-full border border-white overflow-hidden bg-gray-300 flex items-center justify-center mr-4">
                   {team.coach.photo ? (
                     <img
                       src={team.coach.photo}
@@ -81,11 +95,15 @@ const LineupView = ({ lineup }) => {
                     <DefaultPlayerIcon />
                   )}
                 </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-xs text-gray-400">المدرب</span>
+                  <span className="text-white text-sm font-semibold">{team.coach.name}</span>
+                </div>
               </div>
             )}
 
             {/* Substitutes Section */}
-            <div className="w-full">
+            <div className="w-full" dir="rtl">
               <h3 className="text-[#e63946] font-semibold text-sm mb-2">البدلاء</h3>
               {team.substitutes && team.substitutes.length > 0 ? (
                 <div className="flex flex-col gap-2">
@@ -94,35 +112,15 @@ const LineupView = ({ lineup }) => {
                     if (!photo && p.player.id && players?.[p.player.id]?.profile?.photo) {
                       photo = players[p.player.id].profile.photo;
                     }
-                    const rating = p.rating || 6.5;
-                    
                     // Get player events for this specific match using the new key format
                     const playerEvents = getPlayerEvents(p.player.id, team.fixture?.id);
-                    
                     return (
                       <div
                         key={p.player.id || p.player.name || i}
                         className="flex items-center justify-between bg-[#181818] px-4 py-2 rounded-lg border border-[#2a2a2a]"
+                        dir="rtl"
                       >
-                        <div className="flex flex-col items-end flex-1 mr-3">
-                          <div className="flex items-center gap-2 mb-1">
-                            {/* Show real events from API */}
-                            {playerEvents.map((event, eventIdx) => (
-                              <span key={eventIdx} className="mx-0.5">
-                                {renderEventIcon(event)}
-                              </span>
-                            ))}
-                            <span className="bg-yellow-400 text-xs font-bold px-2 py-0.5 rounded border border-yellow-700">
-                              {rating}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2 text-sm">
-                            <span className="text-white font-medium">{p.player.name}</span>
-                            <span className="text-gray-400">{p.player.number}</span>
-                            <span className="text-gray-400">({p.player.pos})</span>
-                          </div>
-                        </div>
-                        <div className="w-10 h-10 rounded-full border border-white overflow-hidden bg-gray-300 flex items-center justify-center ml-4">
+                        <div className="w-10 h-10 rounded-full border border-white overflow-hidden bg-gray-300 flex items-center justify-center mr-4">
                           {photo ? (
                             <img
                               src={photo}
@@ -133,6 +131,21 @@ const LineupView = ({ lineup }) => {
                           ) : (
                             <DefaultPlayerIcon />
                           )}
+                        </div>
+                        <div className="flex flex-col items-end flex-1 mr-3">
+                          <div className="flex items-center gap-2 mb-1">
+                            {/* Show real events from API */}
+                            {playerEvents.map((event, eventIdx) => (
+                              <span key={eventIdx} className="mx-0.5">
+                                {renderEventIcon(event)}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <span className="text-white font-medium">{p.player.name}</span>
+                            <span className="text-gray-400">{p.player.number}</span>
+                            <span className="text-gray-400">({p.player.pos})</span>
+                          </div>
                         </div>
                       </div>
                     );

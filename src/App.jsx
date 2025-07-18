@@ -5,14 +5,15 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 // Add icon import
 import { MessageCircle } from "lucide-react"; // Make sure to install lucide-react or use another icon library
+import TournamentDetails from './pages/TournamentDetails';
 
 // Lazy load pages
 const Home = lazy(() => import("./pages/Home"));
 const ImportantDates = lazy(() => import("./pages/ImportantDates"));
-const Standings = lazy(() => import("./pages/Standings"));
 const TopScorers = lazy(() => import("./pages/TopScorers"));
 const Tournaments = lazy(() => import("./pages/Tournaments"));
 const MatchDetailsPage = lazy(() => import("./pages/MatchDetailsPage"));
+const Standings = lazy(() => import('./pages/Standings'));
 
 function App() {
   const [showChat, setShowChat] = useState(false);
@@ -20,13 +21,15 @@ function App() {
     <Router>
       <Header />
       <main className="flex-1 min-h-screen bg-[#181818] text-white font-sans">
-        <Suspense fallback={<div className="text-center py-10">جاري التحميل...</div>}>
+        <Suspense fallback={<div className="text-center text-gray-400 py-8">جاري التحميل...</div>}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/tournaments" element={<Tournaments />} />
             <Route path="/dates" element={<ImportantDates />} />
             <Route path="/standings" element={<Standings />} />
             <Route path="/scorers" element={<TopScorers />} />
+            <Route path="/tournament/:leagueId" element={<TournamentDetails />} />
+            <Route path="/standings/:leagueId/:season" element={<Standings />} />
             <Route path="/match/:id" element={<MatchDetailsPage />} />
           </Routes>
         </Suspense>

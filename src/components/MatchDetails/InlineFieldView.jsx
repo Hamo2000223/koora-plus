@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useFootballStore } from "../store/football";
+import { useFootballStore } from "../../store/football";
 import DefaultPlayerIcon from "./DefaultPlayerIcon";
 
 const InlineFieldView = ({ startXI, formation }) => {
