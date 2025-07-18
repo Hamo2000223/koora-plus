@@ -1,15 +1,16 @@
 import React, { lazy, Suspense, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import FloatingChat from "./components/FloatingChat";
-import Footer from "./components/Footer";
 import Header from "./components/Header";
 // Add icon import
 import { MessageCircle } from "lucide-react"; // Make sure to install lucide-react or use another icon library
+import About from './pages/About';
+import Contact from './pages/Contact';
 import TournamentDetails from './pages/TournamentDetails';
 
 // Lazy load pages
 const Home = lazy(() => import("./pages/Home"));
-const ImportantDates = lazy(() => import("./pages/ImportantDates"));
+const News = lazy(() => import("./pages/News"));
 const TopScorers = lazy(() => import("./pages/TopScorers"));
 const Tournaments = lazy(() => import("./pages/Tournaments"));
 const MatchDetailsPage = lazy(() => import("./pages/MatchDetailsPage"));
@@ -25,16 +26,17 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/tournaments" element={<Tournaments />} />
-            <Route path="/dates" element={<ImportantDates />} />
+            <Route path="/news" element={<News />} />
             <Route path="/standings" element={<Standings />} />
             <Route path="/scorers" element={<TopScorers />} />
             <Route path="/tournament/:leagueId" element={<TournamentDetails />} />
             <Route path="/standings/:leagueId/:season" element={<Standings />} />
             <Route path="/match/:id" element={<MatchDetailsPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </Suspense>
       </main>
-      <Footer />
       {/* Floating Chat Button - new design */}
       {!showChat && (
         <button

@@ -48,22 +48,22 @@ const formatDate = (date) => {
 };
 
 const Home = () => {
-  const { fixtures, fixturesLoading, fetchFixtures, fetchFixtureEvents, fixtureEvents } = useFootballStore();
+  const { fixtures, fixturesLoading, fetchFixtures,  } = useFootballStore();
   const [selectedDate, setSelectedDate] = useState(getToday());
   const [activeTab, setActiveTab] = useState('today'); // 'yesterday', 'today', 'tomorrow', or null
   const [showingLive, setShowingLive] = useState(false);
-  const [expandedMatchId, setExpandedMatchId] = useState(null);
+  // const [expandedMatchId, setExpandedMatchId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchFixtures({ date: selectedDate });
   }, [fetchFixtures, selectedDate]);
 
-  useEffect(() => {
-    if (expandedMatchId) {
-      fetchFixtureEvents(expandedMatchId);
-    }
-  }, [expandedMatchId, fetchFixtureEvents]);
+  // useEffect(() => {
+  //   if (expandedMatchId) {
+  //     fetchFixtureEvents(expandedMatchId);
+  //   }
+  // }, [expandedMatchId, fetchFixtureEvents]);
 
   const groupedLeagues = fixtures?.response ? groupFixturesByLeague(fixtures.response) : [];
 
@@ -106,7 +106,7 @@ const Home = () => {
       <main className="flex-1 flex flex-col items-center px-1 xs:px-2 md:px-4 py-4 xs:py-6 md:py-8 gap-4 xs:gap-6 md:gap-8">
         <HeroSection />
         {/* تبويبات الأيام + اختيار التاريخ */}
-        <section className="w-full max-w-5xl mb-1 xs:mb-2">
+        <section className="w-full max-w-7xl mb-1 xs:mb-2">
           <TabsWithDate
             selectedDate={selectedDate}
             onDateChange={handleDateChange}
@@ -118,7 +118,7 @@ const Home = () => {
           />
         </section>
         {/* رأس الدوري + قائمة المباريات */}
-        <section className="w-full max-w-5xl">
+        <section className="w-full max-w-7xl">
           <div className="rounded-2xl bg-[#23272f] shadow-md p-2 xs:p-4 flex flex-col gap-3 xs:gap-4 border-2 border-[#0a2342]">
             <h2 className="text-xl xs:text-2xl font-bold mb-1 xs:mb-2 text-right" style={{color: '#e63946'}}>
               مباريات اليوم
