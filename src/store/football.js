@@ -96,4 +96,107 @@ export const useFootballStore = create((set, get) => ({
     }
     return null;
   },
+
+  // Fixture Events
+  fixtureEvents: {}, // { [fixtureId]: { loading, error, events } }
+  fetchFixtureEvents: async (fixtureId, playerId = null) => {
+    const key = playerId ? `${fixtureId}-${playerId}` : fixtureId;
+    set((state) => ({
+      fixtureEvents: {
+        ...state.fixtureEvents,
+        [key]: { loading: true, error: null, events: null },
+      },
+    }));
+    try {
+      const params = { fixture: fixtureId };
+      if (playerId) {
+        params.player = playerId;
+      }
+      const response = await footballApi.get('/fixtures/events', { params });
+      set((state) => ({
+        fixtureEvents: {
+          ...state.fixtureEvents,
+          [key]: { loading: false, error: null, events: response.data.response },
+        },
+      }));
+    } catch (error) {
+      set((state) => ({
+        fixtureEvents: {
+          ...state.fixtureEvents,
+          [key]: {
+            loading: false,
+            error: error.response?.data?.message || error.message || 'حدث خطأ أثناء جلب أحداث المباراة',
+            events: null,
+          },
+        },
+      }));
+    }
+  },
+
+  // Lineups
+  lineups: {}, // { [fixtureId]: { loading, error, lineup } }
+  fetchLineups: async (fixtureId) => {
+    set((state) => ({
+      lineups: {
+        ...state.lineups,
+        [fixtureId]: { loading: true, error: null, lineup: null },
+      },
+    }));
+    try {
+      const response = await footballApi.get('/fixtures/lineups', { params: { fixture: fixtureId } });
+      set((state) => ({
+        lineups: {
+          ...state.lineups,
+          [fixtureId]: { loading: false, error: null, lineup: response.data.response },
+        },
+      }));
+    } catch (error) {
+      set((state) => ({
+        lineups: {
+          ...state.lineups,
+          [fixtureId]: {
+            loading: false,
+            error: error.response?.data?.message || error.message || 'حدث خطأ أثناء جلب التشكيلة',
+            lineup: null,
+          },
+        },
+      }));
+    }
+  },
+
+  // Player profiles/photos
+  players: {}, // { [playerId]: { loading, error, profile } }
+  fetchPlayerProfile: async (playerId) => {
+    const { players } = get();
+    if (players[playerId]?.profile) return players[playerId].profile; // Already cached
+    set((state) => ({
+      players: {
+        ...state.players,
+        [playerId]: { loading: true, error: null, profile: null },
+      },
+    }));
+    try {
+      const response = await footballApi.get('/players/profiles', { params: { player: playerId } });
+      const profile = response.data?.response?.[0]?.player;
+      set((state) => ({
+        players: {
+          ...state.players,
+          [playerId]: { loading: false, error: null, profile },
+        },
+      }));
+      return profile;
+    } catch (error) {
+      set((state) => ({
+        players: {
+          ...state.players,
+          [playerId]: {
+            loading: false,
+            error: error.response?.data?.message || error.message || 'حدث خطأ أثناء جلب بيانات اللاعب',
+            profile: null,
+          },
+        },
+      }));
+      return null;
+    }
+  },
 })); 

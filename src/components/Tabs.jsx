@@ -53,7 +53,7 @@ const TabsWithDate = ({ selectedDate, onDateChange, activeTab, onTabClick, onSho
             type="date"
             value={selectedDate}
             onChange={e => onDateChange(e.target.value)}
-            className="bg-transparent text-white border-none focus:outline-none text-base xs:text-lg w-24 xs:w-32 text-center"
+            className="bg-transparent text-white border-none focus:outline-none text-base xs:text-lg w-30 xs:w-32 text-center"
             style={{ direction: 'ltr' }}
           />
         </div>

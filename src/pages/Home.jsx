@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 import LeagueHeader from "../components/LeagueHeader";
 import MatchCard from "../components/MatchCard";
@@ -47,14 +48,22 @@ const formatDate = (date) => {
 };
 
 const Home = () => {
-  const { fixtures, fixturesLoading, fetchFixtures } = useFootballStore();
+  const { fixtures, fixturesLoading, fetchFixtures, fetchFixtureEvents, fixtureEvents } = useFootballStore();
   const [selectedDate, setSelectedDate] = useState(getToday());
   const [activeTab, setActiveTab] = useState('today'); // 'yesterday', 'today', 'tomorrow', or null
   const [showingLive, setShowingLive] = useState(false);
+  const [expandedMatchId, setExpandedMatchId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchFixtures({ date: selectedDate });
   }, [fetchFixtures, selectedDate]);
+
+  useEffect(() => {
+    if (expandedMatchId) {
+      fetchFixtureEvents(expandedMatchId);
+    }
+  }, [expandedMatchId, fetchFixtureEvents]);
 
   const groupedLeagues = fixtures?.response ? groupFixturesByLeague(fixtures.response) : [];
 
@@ -121,7 +130,11 @@ const Home = () => {
                 <LeagueHeader league={group.league} />
                 <div>
                   {group.fixtures.map(fixture => (
-                    <MatchCard key={fixture.fixture.id} fixture={fixture} />
+                    <React.Fragment key={fixture.fixture.id}>
+                      <div onClick={() => navigate(`/match/${fixture.fixture.id}`)} className="cursor-pointer">
+                        <MatchCard fixture={fixture} />
+                      </div>
+                    </React.Fragment>
                   ))}
                 </div>
               </div>

@@ -12,6 +12,7 @@ const ImportantDates = lazy(() => import("./pages/ImportantDates"));
 const Standings = lazy(() => import("./pages/Standings"));
 const TopScorers = lazy(() => import("./pages/TopScorers"));
 const Tournaments = lazy(() => import("./pages/Tournaments"));
+const MatchDetailsPage = lazy(() => import("./pages/MatchDetailsPage"));
 
 function App() {
   const [showChat, setShowChat] = useState(false);
@@ -26,6 +27,7 @@ function App() {
             <Route path="/dates" element={<ImportantDates />} />
             <Route path="/standings" element={<Standings />} />
             <Route path="/scorers" element={<TopScorers />} />
+            <Route path="/match/:id" element={<MatchDetailsPage />} />
           </Routes>
         </Suspense>
       </main>

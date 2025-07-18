@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_FOOTBALL_KEY = import.meta.env.VITE_API_FOOTBALL_KEY;
-const API_FOOTBALL_BASE_URL = 'https://v3.football.api-sports.io';
+const API_FOOTBALL_BASE_URL = '/api';
 
 const footballApi = axios.create({
   baseURL: API_FOOTBALL_BASE_URL,
