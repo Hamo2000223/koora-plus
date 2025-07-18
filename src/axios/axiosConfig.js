@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_FOOTBALL_KEY = import.meta.env.VITE_API_FOOTBALL_KEY;
 // Use full URL in production, relative path in development
 const API_FOOTBALL_BASE_URL = import.meta.env.PROD 
-  ? (import.meta.env.VITE_API_URL || 'https://your-backend-url.com') 
+  ? (import.meta.env.VITE_API_URL || 'https://koora-plus-backend.vercel.app/api') 
   : '/api';
 
 const footballApi = axios.create({
