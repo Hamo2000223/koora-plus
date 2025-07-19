@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { newsApi } from "../axios/axiosConfig";
 
 const PAGE_SIZE = 8;
-const NEWS_API_BASE = `/api/news`;
+const NEWS_API_BASE = "/news"; // only the endpoint, baseURL is handled by axios instance
 const DEFAULT_IMAGE = "/logo.svg"; // You can use your logo or a generic news placeholder
 
 const News = () => {
@@ -13,13 +14,13 @@ const News = () => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   const fetchNews = async (pageNum = 1, append = false) => {
-    // Use backend endpoint
+    // Use newsApi axios instance
     const url = `${NEWS_API_BASE}?q=كرة القدم&language=ar&sortBy=publishedAt&pageSize=${PAGE_SIZE}&page=${pageNum}`;
     try {
       if (pageNum === 1) setLoading(true);
       else setLoadingMore(true);
-      const res = await fetch(url);
-      const data = await res.json();
+      const res = await newsApi.get(url);
+      const data = res.data;
       if (data.status === "ok") {
         setArticles(prev => append ? [...prev, ...(data.articles || [])] : (data.articles || []));
         setTotalResults(data.totalResults);

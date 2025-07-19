@@ -28,4 +28,14 @@ footballApi.interceptors.response.use(
   }
 );
 
-export default footballApi;
+// News API axios instance
+const NEWS_API_BASE_URL = import.meta.env.PROD 
+  ? (import.meta.env.VITE_API_URL || 'https://koora-plus-backend.vercel.app/api') 
+  : '/api';
+
+const newsApi = axios.create({
+  baseURL: NEWS_API_BASE_URL,
+});
+
+export { footballApi, newsApi };
+

@@ -1,39 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useFootballStore } from "../store/football";
 
 const Standings = () => {
   const { leagueId, season } = useParams();
-  const [standingsGroups, setStandingsGroups] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { standings, standingsLoading, standingsError, fetchStandings } = useFootballStore();
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    fetch(`/api/standings?league=${leagueId}&season=${season}`)
-      .then(res => res.json())
-      .then(data => {
-        // The response is an array of groups, each group is an array of teams
-        setStandingsGroups(data.response?.[0]?.league?.standings || []);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("فشل تحميل جدول الترتيب");
-        setLoading(false);
-      });
-  }, [leagueId, season]);
+    if (leagueId && season) {
+      fetchStandings({ league: leagueId, season });
+    }
+  }, [leagueId, season, fetchStandings]);
+
+  // Extract standingsGroups from the store's standings response
+  const standingsGroups = standings?.response?.[0]?.league?.standings || [];
 
   return (
     <div className="min-h-screen flex flex-col bg-[#181818] text-white font-sans" dir="rtl">
       <main className="flex-1 flex flex-col items-center px-2 py-8">
         <section className="w-full max-w-3xl">
           <h2 className="text-xl font-bold text-[#e63946] mb-6 text-center">جدول الترتيب</h2>
-          {loading && <div className="text-center text-gray-400 py-8">جاري تحميل الترتيب...</div>}
-          {error && <div className="text-center text-red-400 py-8">{error}</div>}
-          {!loading && !error && standingsGroups.length === 0 && (
+          {standingsLoading && <div className="text-center text-gray-400 py-8">جاري تحميل الترتيب...</div>}
+          {standingsError && <div className="text-center text-red-400 py-8">{standingsError}</div>}
+          {!standingsLoading && !standingsError && standingsGroups.length === 0 && (
             <div className="text-center text-gray-400 py-8">لا يوجد ترتيب متاح لهذا الموسم</div>
           )}
-          {!loading && !error && standingsGroups.map((group, groupIdx) => (
+          {!standingsLoading && !standingsError && standingsGroups.map((group, groupIdx) => (
             <div key={groupIdx} className="mb-8">
               {group[0]?.group && (
                 <h3 className="text-lg font-bold text-[#e63946] mb-2 text-center">{group[0].group}</h3>

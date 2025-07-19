@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import footballApi from '../axios/axiosConfig';
+import { footballApi } from '../axios/axiosConfig';
 
 export const useFootballStore = create((set, get) => ({
   // Leagues
@@ -197,6 +197,23 @@ export const useFootballStore = create((set, get) => ({
         },
       }));
       return null;
+    }
+  },
+
+  // Standings
+  standings: null,
+  standingsLoading: false,
+  standingsError: null,
+  fetchStandings: async (params = {}) => {
+    set({ standingsLoading: true, standingsError: null });
+    try {
+      const response = await footballApi.get('/standings', { params });
+      set({ standings: response.data, standingsLoading: false });
+    } catch (error) {
+      set({
+        standingsError: error.response?.data?.message || error.message || 'حدث خطأ أثناء جلب جدول الترتيب',
+        standingsLoading: false,
+      });
     }
   },
 })); 
