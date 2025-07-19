@@ -2,9 +2,7 @@ import axios from 'axios';
 
 const API_FOOTBALL_KEY = import.meta.env.VITE_API_FOOTBALL_KEY;
 // Football API (standings, leagues, etc.)
-const API_FOOTBALL_BASE_URL = import.meta.env.PROD
-  ? (import.meta.env.VITE_API_URL || 'https://koora-plus-backend.vercel.app/api')
-  : '/api';
+const API_FOOTBALL_BASE_URL =  'https://koora-plus.onrender.com/api'
 
 const footballApi = axios.create({
   baseURL: API_FOOTBALL_BASE_URL,
@@ -29,9 +27,7 @@ footballApi.interceptors.response.use(
 );
 
 // News API (news only)
-const NEWS_API_BASE_URL = import.meta.env.PROD
-  ? (import.meta.env.VITE_NEWS_URL || 'https://koora-plus-backend.vercel.app/api/news')
-  : '/api/news';
+const NEWS_API_BASE_URL = 'https://koora-plus.onrender.com/api/news'
 
 const newsApi = axios.create({
   baseURL: NEWS_API_BASE_URL,
