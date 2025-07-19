@@ -12,7 +12,7 @@ export const useNewsStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       // نستخدم المسار 'news' لأن axiosConfig يوجه للـ '/api'
-      const url = `news?q=كرة القدم&lang=ar&sortby=publishedAt&country=eg&max=100`;
+      const url = `?q=كرة القدم&lang=ar&sortby=publishedAt&country=eg&max=100`;
       const res = await newsApi.get(url);
       const data = res.data;
       if (data.articles) {
