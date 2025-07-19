@@ -45,6 +45,30 @@ app.use('/api', async (req, res) => {
   }
 });
 
+// Add NewsAPI endpoint
+const NEWS_API_KEY = process.env.VITE_API_NEWS_KEY || process.env.NEWS_API_KEY;
+app.get('/api/news', async (req, res) => {
+  try {
+    const { page = 1, pageSize = 8, q = 'كرة القدم', language = 'ar', sortBy = 'publishedAt' } = req.query;
+    const url = `https://newsapi.org/v2/everything`;
+    const response = await axios.get(url, {
+      params: {
+        q,
+        language,
+        sortBy,
+        page,
+        pageSize,
+        apiKey: NEWS_API_KEY,
+      },
+    });
+    res.status(200).json(response.data);
+  } catch (error) {
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || error.message || 'NewsAPI proxy error',
+    });
+  }
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 const PAGE_SIZE = 8;
-const NEWS_API_BASE = `https://newsapi.org/v2/everything?q=كرة+القدم&language=ar&sortBy=publishedAt&apiKey=${import.meta.env.VITE_API_NEWS_KEY}`;
+const NEWS_API_BASE = `/api/news`;
 const DEFAULT_IMAGE = "/logo.svg"; // You can use your logo or a generic news placeholder
 
 const News = () => {
@@ -13,7 +13,8 @@ const News = () => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   const fetchNews = async (pageNum = 1, append = false) => {
-    const url = `${NEWS_API_BASE}&pageSize=${PAGE_SIZE}&page=${pageNum}`;
+    // Use backend endpoint
+    const url = `${NEWS_API_BASE}?q=كرة القدم&language=ar&sortBy=publishedAt&pageSize=${PAGE_SIZE}&page=${pageNum}`;
     try {
       if (pageNum === 1) setLoading(true);
       else setLoadingMore(true);
@@ -24,7 +25,7 @@ const News = () => {
         setTotalResults(data.totalResults);
         setError(null);
       } else {
-        setError(data.message || "حدث خطأ أثناء جلب الأخبار / Error fetching news");
+        setError(data.message || data.error || "حدث خطأ أثناء جلب الأخبار / Error fetching news");
       }
     } catch {
       setError("حدث خطأ أثناء جلب الأخبار / Error fetching news");

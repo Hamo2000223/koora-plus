@@ -10,11 +10,7 @@ const Standings = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetch(`https://v3.football.api-sports.io/standings?league=${leagueId}&season=${season}`, {
-      headers: {
-        "x-rapidapi-key": import.meta.env.VITE_API_FOOTBALL_KEY
-      }
-    })
+    fetch(`/api/standings?league=${leagueId}&season=${season}`)
       .then(res => res.json())
       .then(data => {
         // The response is an array of groups, each group is an array of teams
