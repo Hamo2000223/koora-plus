@@ -30,7 +30,7 @@ footballApi.interceptors.response.use(
 
 // News API axios instance
 const NEWS_API_BASE_URL = import.meta.env.PROD
-  ? (import.meta.env.VITE_NEWS_URL || 'https://koora-plus-backend.vercel.app/api')
+  ? (import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/news` : 'https://koora-plus-backend.vercel.app/api/news')
   : '/api/news';
 
 const newsApi = axios.create({

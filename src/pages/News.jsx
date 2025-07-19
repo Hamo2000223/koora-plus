@@ -15,7 +15,7 @@ const News = () => {
 
   const fetchNews = async (pageNum = 1, append = false) => {
     // Use newsApi axios instance
-    const url = `?q=كرة القدم&language=ar&sortBy=publishedAt&pageSize=${PAGE_SIZE}&page=${pageNum}&apiKey=${import.meta.env.VITE_API_NEWS_KEY}`;
+    const url = `?q=كرة القدم&language=ar&sortBy=publishedAt&pageSize=${PAGE_SIZE}&page=${pageNum}`;
     try {
       if (pageNum === 1) setLoading(true);
       else setLoadingMore(true);
