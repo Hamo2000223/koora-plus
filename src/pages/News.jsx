@@ -8,23 +8,19 @@ const DEFAULT_IMAGE = "/logo.svg"; // You can use your logo or a generic news pl
 const News = () => {
   const {
     articles,
-    totalResults,
     loading,
     error,
-    page,
+    visibleCount,
     fetchNews,
+    loadMore,
     resetNews,
   } = useNewsStore();
 
   useEffect(() => {
-    fetchNews(1, false);
+    fetchNews();
     resetNews();
     // eslint-disable-next-line
   }, []);
-
-  const handleLoadMore = () => {
-    fetchNews(page + 1, true);
-  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#181818] text-white font-sans" dir="rtl">
@@ -37,10 +33,10 @@ const News = () => {
             {loading && <div className="text-center text-gray-400 py-8">جاري التحميل... / Loading...</div>}
             {error && <div className="text-center text-red-400 py-8">{error}</div>}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {articles.map((article, idx) => (
+              {articles.slice(0, visibleCount).map((article, idx) => (
                 <div key={idx} className="flex flex-col bg-[#181818] rounded-xl shadow-lg border border-[#23272f] overflow-hidden hover:scale-[1.02] transition-transform duration-200">
                   <img
-                    src={article.urlToImage || DEFAULT_IMAGE}
+                    src={article.image || DEFAULT_IMAGE}
                     alt={article.title}
                     className="w-full h-48 object-cover"
                     loading="lazy"
@@ -62,9 +58,9 @@ const News = () => {
               <div className="text-center text-gray-400 py-8">لا توجد أخبار متاحة حالياً / No news available.</div>
             )}
             {/* Load More Button */}
-            {totalResults !== null && articles.length < totalResults && !loading && !error && (
+            {articles.length > visibleCount && !loading && !error && (
               <button
-                onClick={handleLoadMore}
+                onClick={loadMore}
                 className="mx-auto mt-6 px-6 py-2 rounded-lg bg-[#e63946] text-white font-bold hover:bg-[#c92d3b] transition disabled:opacity-60"
                 disabled={loading}
               >

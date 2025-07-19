@@ -6,7 +6,7 @@ require('dotenv').config();
 const app = express();
 
 // Replace with your real API key
-const API_KEY =process.env.VITE_API_FOOTBALL_KEY;
+const API_KEY = process.env.VITE_API_FOOTBALL_KEY;
 
 // Allow CORS for your frontend (adjust origin as needed)
 app.use(cors({
@@ -17,20 +17,22 @@ app.use(cors({
 // Parse JSON bodies (for POST/PUT requests)
 app.use(bodyParser.json());
 
-const NEWS_API_KEY = process.env.VITE_API_NEWS_KEY || process.env.NEWS_API_KEY;
+const NEWS_API_KEY = process.env.NEWS_API_KEY;
 // Place this BEFORE the universal /api proxy!
 app.get('/api/news', async (req, res) => {
   try {
-    const { page = 1, pageSize = 8, q = 'كرة القدم', language = 'ar', sortBy = 'publishedAt' } = req.query;
-    const url = `https://newsapi.org/v2/everything`;
+    const { q = 'كرة القدم', lang = 'ar', sortby = 'publishedAt', country = 'eg', page = 1, max = 8 } = req.query;
+
+    const url = `https://gnews.io/api/v4/search`;
     const response = await axios.get(url, {
       params: {
         q,
-        language,
-        sortBy,
+        lang,
+        sortby,
+        country,
         page,
-        pageSize,
-        apiKey: NEWS_API_KEY,
+        max,
+        apikey: NEWS_API_KEY,
       },
     });
     res.status(200).json(response.data);

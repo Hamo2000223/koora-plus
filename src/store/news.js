@@ -3,24 +3,24 @@ import { newsApi } from '../axios/axiosConfig';
 
 export const useNewsStore = create((set) => ({
   articles: [],
-  totalResults: null,
+  totalArticles: null,
   loading: false,
   error: null,
-  page: 1,
+  visibleCount: 8,
 
-  fetchNews: async (pageNum = 1, append = false) => {
+  fetchNews: async () => {
     set({ loading: true, error: null });
     try {
-      const url = `${import.meta.env.PROD?`/v2/everything`:""}?q=كرة القدم&language=ar&sortBy=publishedAt&pageSize=8&page=${pageNum}`;
+      const url = `?q=كرة القدم&lang=ar&sortby=publishedAt&country=eg&max=100`;
       const res = await newsApi.get(url);
       const data = res.data;
-      if (data.status === 'ok') {
-        set((state) => ({
-          articles: append ? [...state.articles, ...(data.articles || [])] : (data.articles || []),
-          totalResults: data.totalResults,
+      if (data.articles) {
+        set({
+          articles: data.articles,
+          totalArticles: data.totalArticles,
           error: null,
-          page: pageNum,
-        }));
+          visibleCount: 8,
+        });
       } else {
         set({ error: data.message || data.error || 'حدث خطأ أثناء جلب الأخبار / Error fetching news' });
       }
@@ -31,5 +31,9 @@ export const useNewsStore = create((set) => ({
     }
   },
 
-  resetNews: () => set({ articles: [], totalResults: null, error: null, page: 1 }),
+  loadMore: () => set((state) => ({
+    visibleCount: Math.min(state.visibleCount + 8, state.articles.length),
+  })),
+
+  resetNews: () => set({ articles: [], totalArticles: null, error: null, visibleCount: 8 }),
 })); 

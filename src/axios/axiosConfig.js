@@ -40,7 +40,7 @@ newsApi.interceptors.request.use(
   (config) => {
     config.params = {
       ...(config.params || {}),
-      apiKey: import.meta.env.VITE_API_NEWS_KEY, // your static param here
+      apikey: import.meta.env.VITE_API_NEWS_KEY, // your static param here
     };
     return config;
   },
