@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { useNewsStore } from "../store/news";
 
-const PAGE_SIZE = 8;
- // only the endpoint, baseURL is handled by axios instance
 const DEFAULT_IMAGE = "/logo.svg"; // You can use your logo or a generic news placeholder
 
 const News = () => {
@@ -36,7 +34,7 @@ const News = () => {
               {articles.map((article, idx) => (
                 <div key={idx} className="flex flex-col bg-[#181818] rounded-xl shadow-lg border border-[#23272f] overflow-hidden hover:scale-[1.02] transition-transform duration-200">
                   <img
-                    src={article.urlToImage || DEFAULT_IMAGE}
+                    src={article.image || DEFAULT_IMAGE}
                     alt={article.title}
                     className="w-full h-48 object-cover"
                     loading="lazy"

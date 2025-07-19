@@ -14,9 +14,9 @@ export const useNewsStore = create((set, get) => ({
     try {
       const params = {
         q: 'كرة القدم',
-        language: 'ar',
-        sortBy: 'publishedAt',
-        pageSize: 8,
+        lang: 'ar',
+        sortby: 'publishedAt',
+        max: 8,
         page: page
       };
       const res = await newsApi.get('', { params });
@@ -24,7 +24,7 @@ export const useNewsStore = create((set, get) => ({
       if (data.articles) {
         set((state) => ({
           articles: append ? [...state.articles, ...data.articles] : data.articles,
-          totalArticles: data.totalResults,
+          totalArticles: data.totalArticles,
           error: null,
           visibleCount: append ? state.visibleCount + data.articles.length : 8,
           page,
