@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+require('dotenv').config();
 const app = express();
 
 // Replace with your real API key
@@ -17,7 +17,33 @@ app.use(cors({
 // Parse JSON bodies (for POST/PUT requests)
 app.use(bodyParser.json());
 
-// Universal proxy for all /api/* endpoints
+const NEWS_API_KEY = process.env.VITE_API_NEWS_KEY || process.env.NEWS_API_KEY;
+// Place this BEFORE the universal /api proxy!
+app.get('/api/news', async (req, res) => {
+  try {
+    const { page = 1, pageSize = 8, q = 'كرة القدم', language = 'ar', sortBy = 'publishedAt' } = req.query;
+    const url = `https://newsapi.org/v2/everything`;
+    const response = await axios.get(url, {
+      params: {
+        q,
+        language,
+        sortBy,
+        page,
+        pageSize,
+        apiKey: NEWS_API_KEY,
+      },
+    });
+    res.status(200).json(response.data);
+  } catch (error) {
+    // Log error for debugging
+    console.error('NewsAPI error:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).json({
+      error: error.response?.data || error.message || 'NewsAPI proxy error',
+    });
+  }
+});
+
+// Universal proxy for all /api/* endpoints (keep this after /api/news)
 app.use('/api', async (req, res) => {
   try {
     // Build the target URL
@@ -41,30 +67,6 @@ app.use('/api', async (req, res) => {
   } catch (error) {
     res.status(error.response?.status || 500).json({
       error: error.response?.data || error.message || 'Proxy error',
-    });
-  }
-});
-
-// Add NewsAPI endpoint
-const NEWS_API_KEY = process.env.VITE_API_NEWS_KEY || process.env.NEWS_API_KEY;
-app.get('/api/news', async (req, res) => {
-  try {
-    const { page = 1, pageSize = 8, q = 'كرة القدم', language = 'ar', sortBy = 'publishedAt' } = req.query;
-    const url = `https://newsapi.org/v2/everything`;
-    const response = await axios.get(url, {
-      params: {
-        q,
-        language,
-        sortBy,
-        page,
-        pageSize,
-        apiKey: NEWS_API_KEY,
-      },
-    });
-    res.status(200).json(response.data);
-  } catch (error) {
-    res.status(error.response?.status || 500).json({
-      error: error.response?.data || error.message || 'NewsAPI proxy error',
     });
   }
 });
