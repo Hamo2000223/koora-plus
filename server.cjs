@@ -8,6 +8,9 @@ const app = express();
 const API_KEY = process.env.VITE_API_FOOTBALL_KEY;
 const NEWS_API_KEY = process.env.NEWS_API_KEY;
 
+const NewsAPI = require('newsapi');
+const newsapi = new NewsAPI(NEWS_API_KEY);
+
 app.use(cors({
   origin: ['http://localhost:5173', 'https://koora-plus.vercel.app','https://koora-plus.onrender.com'],
   credentials: true,
@@ -15,42 +18,45 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
-// ✅ News API Proxy
+// ✅ News API Proxy using official library
 app.get('/api/news', async (req, res) => {
   try {
-    console.log(req)
     const { q = 'كرة القدم', language = 'ar', sortBy = 'publishedAt', page = 1, pageSize = 8 } = req.query;
 
-    const response = await axios.get('https://newsapi.org/v2/everything', {
-      params: {
-        q,
-        language,
-        sortBy,
-        page,
-        pageSize,
-        apiKey: NEWS_API_KEY,
-      },
+    const response = await newsapi.v2.everything({
+      q,
+      language,
+      sortBy,
+      page,
+      pageSize
     });
 
-    res.status(200).json(response.data);
+    res.status(200).json(response);
   } catch (error) {
-    // Detailed error logging
-    console.error('NewsAPI error:', error.response?.data || error.message);
-    if (error.response) {
-      console.error('Status:', error.response.status);
-      console.error('Headers:', error.response.headers);
-      console.error('Data:', error.response.data);
-    } else {
-      console.error('Error:', error.message);
-    }
-    res.status(error.response?.status || 500).json({
-      error: error.response?.data || error.message || 'NewsAPI proxy error',
+    console.error('NewsAPI error:', error);
+    res.status(500).json({ error: error.message || 'NewsAPI error' });
+  }
+});
+
+// Test NewsAPI.org using the official library
+app.get('/api/news/test', async (req, res) => {
+  try {
+    const response = await newsapi.v2.everything({
+      q: 'كرة القدم',
+      language: 'ar',
+      sortBy: 'publishedAt',
+      page: 1,
+      pageSize: 8
     });
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('NewsAPI (library) error:', error);
+    res.status(500).json({ error: error.message || 'NewsAPI library error' });
   }
 });
 
 // ✅ Football API Proxy
-app.use('/api/football', async (req, res) => {
+app.use('/api', async (req, res) => {
   try {
     const apiUrl = `https://v3.football.api-sports.io${req.originalUrl.replace(/^\/api/, '')}`;
     const response = await axios({
