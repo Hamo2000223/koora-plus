@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const API_FOOTBALL_KEY = import.meta.env.VITE_API_FOOTBALL_KEY;
 // Use full URL in production, relative path in development
-const API_FOOTBALL_BASE_URL = import.meta.env.PROD 
-  ? (import.meta.env.VITE_API_URL || 'https://koora-plus-backend.vercel.app/api') 
+const API_FOOTBALL_BASE_URL = import.meta.env.PROD
+  ? (import.meta.env.VITE_API_URL || 'https://koora-plus-backend.vercel.app/api')
   : '/api';
 
 const footballApi = axios.create({
@@ -29,13 +29,26 @@ footballApi.interceptors.response.use(
 );
 
 // News API axios instance
-const NEWS_API_BASE_URL = import.meta.env.PROD 
-  ? (import.meta.env.VITE_NEWS_URL || 'https://koora-plus-backend.vercel.app/api') 
+const NEWS_API_BASE_URL = import.meta.env.PROD
+  ? (import.meta.env.VITE_NEWS_URL || 'https://koora-plus-backend.vercel.app/api')
   : '/api/news';
 
 const newsApi = axios.create({
   baseURL: NEWS_API_BASE_URL,
 });
+newsApi.interceptors.request.use(
+  (config) => config,
+  (error) => Promise.reject(error)
+);
+newsApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Optionally handle unauthorized errors here
+    }
+    return Promise.reject(error);
+  }
+);
 
 export { footballApi, newsApi };
 
