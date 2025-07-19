@@ -1,27 +1,28 @@
 import { create } from 'zustand';
 import { newsApi } from '../axios/axiosConfig';
 
-export const useNewsStore = create((set) => ({
+export const useNewsStore = create((set, get) => ({
   articles: [],
   totalArticles: null,
   loading: false,
   error: null,
   visibleCount: 8,
+  page: 1, // Track current page
 
-  fetchNews: async () => {
+  fetchNews: async (page = 1, append = false) => {
     set({ loading: true, error: null });
     try {
-      // نستخدم المسار 'news' لأن axiosConfig يوجه للـ '/api'
-      const url = `?q=كرة القدم&lang=ar&sortby=publishedAt&country=eg&max=100`;
+      const url = `?page=${page}`;
       const res = await newsApi.get(url);
       const data = res.data;
       if (data.articles) {
-        set({
-          articles: data.articles,
-          totalArticles: data.totalArticles,
+        set((state) => ({
+          articles: append ? [...state.articles, ...data.articles] : data.articles,
+          totalArticles: data.totalResults,
           error: null,
-          visibleCount: 8,
-        });
+          visibleCount: append ? state.visibleCount + data.articles.length : 8,
+          page,
+        }));
       } else {
         set({ error: data.message || data.error || 'حدث خطأ أثناء جلب الأخبار / Error fetching news' });
       }
@@ -32,9 +33,10 @@ export const useNewsStore = create((set) => ({
     }
   },
 
-  loadMore: () => set((state) => ({
-    visibleCount: Math.min(state.visibleCount + 8, state.articles.length),
-  })),
+  loadMore: () => {
+    const { page, fetchNews } = get();
+    fetchNews(page + 1, true); // Load next page and append
+  },
 
-  resetNews: () => set({ articles: [], totalArticles: null, error: null, visibleCount: 8 }),
+  resetNews: () => set({ articles: [], totalArticles: null, error: null, visibleCount: 8, page: 1 }),
 }));

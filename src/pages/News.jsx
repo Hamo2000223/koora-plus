@@ -10,14 +10,14 @@ const News = () => {
     articles,
     loading,
     error,
-    visibleCount,
+    totalArticles,
     fetchNews,
     loadMore,
     resetNews,
   } = useNewsStore();
 
   useEffect(() => {
-    fetchNews();
+    fetchNews(1, false);
     resetNews();
     // eslint-disable-next-line
   }, []);
@@ -33,10 +33,10 @@ const News = () => {
             {loading && <div className="text-center text-gray-400 py-8">جاري التحميل... / Loading...</div>}
             {error && <div className="text-center text-red-400 py-8">{error}</div>}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {articles.slice(0, visibleCount).map((article, idx) => (
+              {articles.map((article, idx) => (
                 <div key={idx} className="flex flex-col bg-[#181818] rounded-xl shadow-lg border border-[#23272f] overflow-hidden hover:scale-[1.02] transition-transform duration-200">
                   <img
-                    src={article.image || DEFAULT_IMAGE}
+                    src={article.urlToImage || DEFAULT_IMAGE}
                     alt={article.title}
                     className="w-full h-48 object-cover"
                     loading="lazy"
@@ -58,7 +58,7 @@ const News = () => {
               <div className="text-center text-gray-400 py-8">لا توجد أخبار متاحة حالياً / No news available.</div>
             )}
             {/* Load More Button */}
-            {articles.length > visibleCount && !loading && !error && (
+            {articles.length < totalArticles && !loading && !error && (
               <button
                 onClick={loadMore}
                 className="mx-auto mt-6 px-6 py-2 rounded-lg bg-[#e63946] text-white font-bold hover:bg-[#c92d3b] transition disabled:opacity-60"

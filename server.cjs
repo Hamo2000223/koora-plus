@@ -18,17 +18,16 @@ app.use(bodyParser.json());
 // ✅ News API Proxy
 app.get('/api/news', async (req, res) => {
   try {
-    const { q = 'كرة القدم', lang = 'ar', sortby = 'publishedAt', country = 'eg', page = 1, max = 8 } = req.query;
+    const { q = 'كرة القدم', language = 'ar', sortBy = 'publishedAt', page = 1, pageSize = 8 } = req.query;
 
-    const response = await axios.get('https://gnews.io/api/v4/search', {
+    const response = await axios.get('https://newsapi.org/v2/everything', {
       params: {
         q,
-        lang,
-        sortby,
-        country,
+        language,
+        sortBy,
         page,
-        max,
-        apikey: NEWS_API_KEY,
+        pageSize,
+        apiKey: NEWS_API_KEY,
       },
     });
 
