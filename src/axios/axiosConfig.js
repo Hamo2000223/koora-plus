@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_FOOTBALL_KEY = import.meta.env.VITE_API_FOOTBALL_KEY;
 // Football API (standings, leagues, etc.)
-const API_FOOTBALL_BASE_URL =  'https://koora-plus.onrender.com/api'
+const API_FOOTBALL_BASE_URL =  'https://koora-plus.onrender.com/api/football'
 
 const footballApi = axios.create({
   baseURL: API_FOOTBALL_BASE_URL,
@@ -27,17 +27,13 @@ footballApi.interceptors.response.use(
 );
 
 // News API (news only)
-const NEWS_API_BASE_URL = 'https://newsapi.org/v2/everything'
+const NEWS_API_BASE_URL = 'https://koora-plus.onrender.com/api'
 
 const newsApi = axios.create({
   baseURL: NEWS_API_BASE_URL,
 });
 newsApi.interceptors.request.use(
   (config) => {
-    config.params = {
-      ...(config.params || {}),
-      apikey: import.meta.env.NEWS_API_KEY, // your static param here
-    };
     return config;
   },
   (error) => Promise.reject(error)

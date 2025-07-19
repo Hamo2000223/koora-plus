@@ -18,6 +18,7 @@ app.use(bodyParser.json());
 // ✅ News API Proxy
 app.get('/api/news', async (req, res) => {
   try {
+    console.log(req)
     const { q = 'كرة القدم', language = 'ar', sortBy = 'publishedAt', page = 1, pageSize = 8 } = req.query;
 
     const response = await axios.get('https://newsapi.org/v2/everything', {
@@ -49,7 +50,7 @@ app.get('/api/news', async (req, res) => {
 });
 
 // ✅ Football API Proxy
-app.use('/api', async (req, res) => {
+app.use('/api/football', async (req, res) => {
   try {
     const apiUrl = `https://v3.football.api-sports.io${req.originalUrl.replace(/^\/api/, '')}`;
     const response = await axios({
