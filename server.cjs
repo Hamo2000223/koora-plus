@@ -9,7 +9,7 @@ const API_KEY = process.env.VITE_API_FOOTBALL_KEY;
 const NEWS_API_KEY = process.env.NEWS_API_KEY;
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://koora-plus.vercel.app'],
+  origin: ['http://localhost:5173', 'https://koora-plus.vercel.app','https://koora-plus.onrender.com'],
   credentials: true,
 }));
 

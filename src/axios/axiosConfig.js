@@ -27,7 +27,7 @@ footballApi.interceptors.response.use(
 );
 
 // News API (news only)
-const NEWS_API_BASE_URL = 'https://koora-plus.onrender.com/api/news'
+const NEWS_API_BASE_URL = 'https://newsapi.org/v2/everything'
 
 const newsApi = axios.create({
   baseURL: NEWS_API_BASE_URL,
