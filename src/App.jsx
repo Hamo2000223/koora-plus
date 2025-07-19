@@ -11,7 +11,7 @@ import TournamentDetails from './pages/TournamentDetails';
 // Lazy load pages
 const Home = lazy(() => import("./pages/Home"));
 const News = lazy(() => import("./pages/News"));
-const TopScorers = lazy(() => import("./pages/TopScorers"));
+const Matches = lazy(() => import("./pages/Matches"));
 const Tournaments = lazy(() => import("./pages/Tournaments"));
 const MatchDetailsPage = lazy(() => import("./pages/MatchDetailsPage"));
 const Standings = lazy(() => import('./pages/Standings'));
@@ -27,8 +27,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/tournaments" element={<Tournaments />} />
             <Route path="/news" element={<News />} />
+            <Route path="/matches" element={<Matches />} />
             <Route path="/standings" element={<Standings />} />
-            <Route path="/scorers" element={<TopScorers />} />
             <Route path="/tournament/:leagueId" element={<TournamentDetails />} />
             <Route path="/standings/:leagueId/:season" element={<Standings />} />
             <Route path="/match/:id" element={<MatchDetailsPage />} />

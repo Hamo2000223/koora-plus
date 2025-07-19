@@ -1,4 +1,4 @@
-import { BarChart3, ChevronDown, Home, Info, Newspaper, Phone, Star, UserCheck } from 'lucide-react';
+import { BarChart3, ChevronDown, Home, Info, Newspaper, Phone, Star } from 'lucide-react';
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -21,9 +21,8 @@ const Header = () => {
   const navLinks = [
     { to: "/", label: "الرئيسية", icon: <Home size={18} />, active: location.pathname === "/" },
     { to: "/news", label: "الأخبار", icon: <Newspaper size={18} />, active: location.pathname === "/news" },
+    { to: "/matches", label: "المباريات", icon: <BarChart3 size={18} />, active: location.pathname === "/matches" },
     { to: "/tournaments", label: "البطولات", icon: <Star size={18} />, active: location.pathname === "/tournaments" },
-    { to: "/standings", label: "الترتيب", icon: <BarChart3 size={18} />, active: location.pathname === "/standings" },
-    { to: "/scorers", label: "الهدافين", icon: <UserCheck size={18} />, active: location.pathname === "/scorers" },
   ];
 
   return (

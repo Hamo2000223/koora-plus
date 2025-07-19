@@ -65,18 +65,16 @@ const TabsWithDate = ({ selectedDate, onDateChange, activeTab, onTabClick, onSho
         </button>
       </div>
       {/* Live Matches Button - bottom right */}
-      {isToday && (
+      {(isToday || isYesterday) && liveMatchCount > 0 && (
         <button
           className={`absolute bottom-2 xs:bottom-3 right-2 xs:right-3 px-3 xs:px-4 py-1.5 xs:py-2 rounded-lg font-bold text-xs xs:text-sm transition z-10
             ${showingLive ? 'bg-green-400 text-white' : 'bg-[#23272f] text-green-400 hover:bg-green-400 hover:text-white'}`}
           onClick={onShowLive}
         >
           <span className="animate-pulse">مباشر</span>
-          {liveMatchCount > 0 && (
-            <span className="mr-2 xs:mr-4 bg-white text-green-600 rounded-full px-1.5 xs:px-2 py-0.5 text-[10px] xs:text-xs font-bold">
-              {liveMatchCount}
-            </span>
-          )}
+          <span className="mr-2 xs:mr-4 bg-white text-green-600 rounded-full px-1.5 xs:px-2 py-0.5 text-[10px] xs:text-xs font-bold">
+            {liveMatchCount}
+          </span>
         </button>
       )}
     </div>
