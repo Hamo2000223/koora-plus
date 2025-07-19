@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_FOOTBALL_KEY = import.meta.env.VITE_API_FOOTBALL_KEY;
 
 const API_BASE_URL = import.meta.env.PROD
-  ? 'https://koora-plus-backend.vercel.app/api'
+  ? import.meta.env.VITE_NEWS_URL
   : '/api';
 
 const footballApi = axios.create({
