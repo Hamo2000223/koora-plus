@@ -11,7 +11,7 @@ export const useNewsStore = create((set) => ({
   fetchNews: async (pageNum = 1, append = false) => {
     set({ loading: true, error: null });
     try {
-      const url = `?q=كرة القدم&language=ar&sortBy=publishedAt&pageSize=8&page=${pageNum}`;
+      const url = `${import.meta.env.PROD?`/v2/everything`:""}?q=كرة القدم&language=ar&sortBy=publishedAt&pageSize=8&page=${pageNum}`;
       const res = await newsApi.get(url);
       const data = res.data;
       if (data.status === 'ok') {

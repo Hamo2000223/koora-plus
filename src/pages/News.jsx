@@ -68,7 +68,7 @@ const News = () => {
                 className="mx-auto mt-6 px-6 py-2 rounded-lg bg-[#e63946] text-white font-bold hover:bg-[#c92d3b] transition disabled:opacity-60"
                 disabled={loading}
               >
-                {loading ? "جاري التحميل... / Loading..." : "تحميل المزيد من الأخبار / Load more news"}
+                {loading ? "جاري التحميل..." : "تحميل المزيد من الأخبار"}
               </button>
             )}
           </div>

@@ -37,7 +37,13 @@ const newsApi = axios.create({
   baseURL: NEWS_API_BASE_URL,
 });
 newsApi.interceptors.request.use(
-  (config) => config,
+  (config) => {
+    config.params = {
+      ...(config.params || {}),
+      apiKey: import.meta.env.VITE_API_NEWS_KEY, // your static param here
+    };
+    return config;
+  },
   (error) => Promise.reject(error)
 );
 newsApi.interceptors.response.use(
