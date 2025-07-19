@@ -33,7 +33,15 @@ app.get('/api/news', async (req, res) => {
 
     res.status(200).json(response.data);
   } catch (error) {
+    // Detailed error logging
     console.error('NewsAPI error:', error.response?.data || error.message);
+    if (error.response) {
+      console.error('Status:', error.response.status);
+      console.error('Headers:', error.response.headers);
+      console.error('Data:', error.response.data);
+    } else {
+      console.error('Error:', error.message);
+    }
     res.status(error.response?.status || 500).json({
       error: error.response?.data || error.message || 'NewsAPI proxy error',
     });
