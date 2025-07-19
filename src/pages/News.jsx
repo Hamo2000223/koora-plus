@@ -1,50 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { newsApi } from "../axios/axiosConfig";
+import React, { useEffect } from "react";
+import { useNewsStore } from "../store/news";
 
 const PAGE_SIZE = 8;
  // only the endpoint, baseURL is handled by axios instance
 const DEFAULT_IMAGE = "/logo.svg"; // You can use your logo or a generic news placeholder
 
 const News = () => {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
-  const [totalResults, setTotalResults] = useState(null);
-  const [loadingMore, setLoadingMore] = useState(false);
-
-  const fetchNews = async (pageNum = 1, append = false) => {
-    // Use newsApi axios instance
-    const url = `?q=كرة القدم&language=ar&sortBy=publishedAt&pageSize=${PAGE_SIZE}&page=${pageNum}`;
-    try {
-      if (pageNum === 1) setLoading(true);
-      else setLoadingMore(true);
-      const res = await newsApi.get(url);
-      const data = res.data;
-      if (data.status === "ok") {
-        setArticles(prev => append ? [...prev, ...(data.articles || [])] : (data.articles || []));
-        setTotalResults(data.totalResults);
-        setError(null);
-      } else {
-        setError(data.message || data.error || "حدث خطأ أثناء جلب الأخبار / Error fetching news");
-      }
-    } catch {
-      setError("حدث خطأ أثناء جلب الأخبار / Error fetching news");
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  };
+  const {
+    articles,
+    totalResults,
+    loading,
+    error,
+    page,
+    fetchNews,
+    resetNews,
+  } = useNewsStore();
 
   useEffect(() => {
     fetchNews(1, false);
-    setPage(1);
+    resetNews();
+    // eslint-disable-next-line
   }, []);
 
   const handleLoadMore = () => {
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchNews(nextPage, true);
+    fetchNews(page + 1, true);
   };
 
   return (
@@ -87,9 +66,9 @@ const News = () => {
               <button
                 onClick={handleLoadMore}
                 className="mx-auto mt-6 px-6 py-2 rounded-lg bg-[#e63946] text-white font-bold hover:bg-[#c92d3b] transition disabled:opacity-60"
-                disabled={loadingMore}
+                disabled={loading}
               >
-                {loadingMore ? "جاري التحميل... / Loading..." : "تحميل المزيد من الأخبار / Load more news"}
+                {loading ? "جاري التحميل... / Loading..." : "تحميل المزيد من الأخبار / Load more news"}
               </button>
             )}
           </div>
