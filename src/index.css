@@ -39,11 +39,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     opacity: 0;
     transform: translateY(10px);
   }
-  2% {
+  3.33% {
     opacity: 1;
     transform: translateY(0);
   }
-  18% {
+  16.67% {
     opacity: 1;
     transform: translateY(0);
   }

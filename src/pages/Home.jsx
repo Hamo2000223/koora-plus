@@ -82,6 +82,8 @@ const Home = () => {
                   className="absolute flex items-center gap-2 text-white font-bold text-lg animate-stats-item"
                   style={{ 
                     animationDelay: `${idx * 6}s`,
+                    animationDuration: '30s',
+                    animationFillMode: 'both',
                     animationIterationCount: 'infinite'
                   }}
                 >
