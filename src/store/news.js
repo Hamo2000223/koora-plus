@@ -11,7 +11,8 @@ export const useNewsStore = create((set) => ({
   fetchNews: async () => {
     set({ loading: true, error: null });
     try {
-      const url = `?q=كرة القدم&lang=ar&sortby=publishedAt&country=eg&max=100`;
+      // نستخدم المسار 'news' لأن axiosConfig يوجه للـ '/api'
+      const url = `news?q=كرة القدم&lang=ar&sortby=publishedAt&country=eg&max=100`;
       const res = await newsApi.get(url);
       const data = res.data;
       if (data.articles) {
@@ -36,4 +37,4 @@ export const useNewsStore = create((set) => ({
   })),
 
   resetNews: () => set({ articles: [], totalArticles: null, error: null, visibleCount: 8 }),
-})); 
+}));
