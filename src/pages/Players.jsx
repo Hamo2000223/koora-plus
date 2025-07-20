@@ -59,6 +59,7 @@ const Players = () => {
     if (selectedTeam) {
       setPlayersLoading(true);
       const { fetchTeamPlayers } = useFootballStore.getState();
+      console.log('Fetching team players:', selectedTeam);
       fetchTeamPlayers(selectedTeam).finally(() => {
         setPlayersLoading(false);
       });
@@ -80,11 +81,23 @@ const Players = () => {
     } else if (search.trim().length === 0) {
       setSearchMode(false);
       // Reset to team-based players
-      const teamKey = `${selectedTeam}-null`;
+      const teamKey = selectedTeam?.toString();
       const teamData = teamPlayers[teamKey];
       
       if (teamData?.players && teamData.players.length > 0) {
-        const playersArray = teamData.players[0]?.players || [];
+        // The /players/squads endpoint returns a simple array of player objects
+        const playersArray = teamData.players.map(player => ({
+          id: player.id,
+          name: player.name,
+          photo: player.photo,
+          position: player.position,
+          age: player.age,
+          nationality: player.nationality,
+          number: player.number,
+          birth: player.birth,
+          height: player.height,
+          weight: player.weight,
+        }));
         setFilteredPlayers(playersArray);
         setVisibleCount(PAGE_SIZE);
       } else {
@@ -95,12 +108,24 @@ const Players = () => {
 
   // Filter team players when not in search mode
   useEffect(() => {
-    if (!searchMode) {
-      const teamKey = `${selectedTeam}-null`;
+    if (!searchMode && selectedTeam) {
+      const teamKey = selectedTeam.toString();
       const teamData = teamPlayers[teamKey];
       
       if (teamData?.players && teamData.players.length > 0) {
-        const playersArray = teamData.players[0]?.players || [];
+        // The /players/squads endpoint returns a simple array of player objects
+        const playersArray = teamData.players.map(player => ({
+          id: player.id,
+          name: player.name,
+          photo: player.photo,
+          position: player.position,
+          age: player.age,
+          nationality: player.nationality,
+          number: player.number,
+          birth: player.birth,
+          height: player.height,
+          weight: player.weight,
+        }));
         setFilteredPlayers(playersArray);
         setVisibleCount(PAGE_SIZE);
       } else {
@@ -247,47 +272,53 @@ const Players = () => {
             </div>
           </div>
 
+
+
+
+
           {/* Loading State */}
           {(playersLoading || playersSearchLoading) ? (
             <LoadingComponent />
           ) : (
             <>
+
+
               {/* Players Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {filteredPlayers.slice(0, visibleCount).map((player) => (
                   <div
-                    key={`player-${player.id}`}
+                    key={`player-${player?.id || Math.random()}`}
                     className="flex flex-col items-center bg-white rounded-xl p-4 border border-[#333] shadow hover:shadow-lg transition cursor-pointer hover:scale-105"
                     onClick={() => handlePlayerClick(player)}
                   >
                     <img 
-                      src={player.photo || "/default-player.svg"} 
-                      alt={player.name} 
+                      src={player?.photo || "/default-player.svg"} 
+                      alt={player?.name || "Player"} 
                       className="w-16 h-16 object-cover rounded-full mb-2 border-2 border-gray-200"
                       onError={(e) => {
                         e.target.src = "/default-player.svg";
                       }}
                     />
                     <span className="text-center font-bold text-sm text-gray-900 mt-1 line-clamp-2">
-                      {player.name}
+                      {player?.name || "غير محدد"}
                     </span>
                     <span className="text-center text-xs text-gray-500 mt-1">
-                      {player.position || "غير محدد"}
+                      {player?.position || "غير محدد"}
                     </span>
-                    {player.age && (
+                    {player?.age && (
                       <span className="text-center text-xs text-gray-400 mt-1">
                         العمر: {player.age}
                       </span>
                     )}
                     {/* Show nationality for searched players, team name for team players */}
                     {searchMode ? (
-                      player.nationality && (
+                      player?.nationality && (
                         <span className="text-center text-xs text-gray-400 mt-1">
                           {player.nationality}
                         </span>
                       )
                     ) : (
-                      player.number && (
+                      player?.number && (
                         <span className="text-center text-xs text-gray-400 mt-1">
                           الرقم: {player.number}
                         </span>

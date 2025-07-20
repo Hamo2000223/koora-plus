@@ -181,8 +181,9 @@ export const useFootballStore = create((set, get) => ({
 
   // Team Players
   teamPlayers: {}, // { [teamId]: { loading, error, players } }
-  fetchTeamPlayers: async (teamId, season = null) => {
-    const key = `${teamId}-${season}`;
+  fetchTeamPlayers: async (teamId) => {
+    // Use just teamId as key since /players/squads doesn't need season
+    const key = teamId.toString();
     set((state) => ({
       teamPlayers: {
         ...state.teamPlayers,
@@ -191,21 +192,16 @@ export const useFootballStore = create((set, get) => ({
     }));
     try {
       const params = { team: teamId };
-      if (season) params.season = season;
+      // Don't include season parameter for /players/squads
       
-      // Try /players endpoint first
-      let response;
-      try {
-        response = await footballApi.get('/players', { params });
-      } catch {
-        // Fallback to /players/squads
-        response = await footballApi.get('/players/squads', { params });
-      }
+      // Use /players/squads endpoint directly
+      const response = await footballApi.get('/players/squads', { params });
+
       
       set((state) => ({
         teamPlayers: {
           ...state.teamPlayers,
-          [key]: { loading: false, error: null, players: response.data.response },
+          [key]: { loading: false, error: null, players: response.data.response[0]?.players || [] },
         },
       }));
     } catch (error) {
