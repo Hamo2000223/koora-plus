@@ -6,7 +6,7 @@ export const useNewsStore = create((set, get) => ({
   totalArticles: null,
   loading: false,
   error: null,
-  visibleCount: 8,
+  visibleCount: 10,
   page: 1, // Track current page
 
   fetchNews: async (page = 1, append = false) => {
