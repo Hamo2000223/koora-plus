@@ -16,7 +16,6 @@ export const useNewsStore = create((set, get) => ({
         q: 'كرة القدم',
         lang: 'ar',
         sortby: 'publishedAt',
-        max: 8,
         page: page
       };
       const res = await newsApi.get('', { params });

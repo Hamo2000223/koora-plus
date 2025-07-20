@@ -94,6 +94,46 @@ const Home = () => {
           </div>
         </section>
         
+        
+        
+        {/* رأس الدوري + قائمة المباريات */}
+        <section className="w-full max-w-7xl">
+          <div className="rounded-2xl bg-[#23272f] shadow-md p-2 xs:p-4 flex flex-col gap-3 xs:gap-4 border-2 border-[#0a2342]">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-xl xs:text-2xl font-bold text-right" style={{color: '#e63946'}}>
+                مباريات اليوم
+              </h2>
+              <button
+                onClick={() => navigate('/matches')}
+                className="px-4 py-2 rounded-lg bg-[#e63946] text-white font-bold hover:bg-[#c92d3b] transition text-sm"
+              >
+                عرض جميع المباريات
+              </button>
+            </div>
+            {fixturesLoading && <div>جاري التحميل...</div>}
+            {!fixturesLoading && filteredGroupedLeagues.length === 0 && <div>لا توجد مباريات اليوم</div>}
+            {!fixturesLoading && filteredGroupedLeagues.slice(0, 3).map(group => (
+              <div key={group.league.id} className="mb-4 xs:mb-6">
+                <LeagueHeader league={group.league} />
+                <div>
+                  {group.fixtures.slice(0, 5).map(fixture => (
+                    <React.Fragment key={fixture.fixture.id}>
+                      <div onClick={() => navigate(`/match/${fixture.fixture.id}`)} className="cursor-pointer">
+                        <MatchCard fixture={fixture} />
+                      </div>
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {!fixturesLoading && filteredGroupedLeagues.length > 3 && (
+              <div className="text-center text-gray-400 py-4">
+                عرض {filteredGroupedLeagues.slice(0, 3).reduce((acc, group) => acc + group.fixtures.slice(0, 5).length, 0)} من {filteredGroupedLeagues.reduce((acc, group) => acc + group.fixtures.length, 0)} مباراة
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* News Section */}
         <section className="w-full max-w-7xl">
           <div className="rounded-2xl bg-[#23272f] shadow-md p-2 xs:p-4 flex flex-col gap-3 xs:gap-4 border-2 border-[#0a2342]">
@@ -147,44 +187,6 @@ const Home = () => {
             
             {!newsLoading && articles.length === 0 && (
               <div className="text-center text-gray-400 py-8">لا توجد أخبار متاحة حالياً / No news available.</div>
-            )}
-          </div>
-        </section>
-        
-        {/* رأس الدوري + قائمة المباريات */}
-        <section className="w-full max-w-7xl">
-          <div className="rounded-2xl bg-[#23272f] shadow-md p-2 xs:p-4 flex flex-col gap-3 xs:gap-4 border-2 border-[#0a2342]">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-xl xs:text-2xl font-bold text-right" style={{color: '#e63946'}}>
-                مباريات اليوم
-              </h2>
-              <button
-                onClick={() => navigate('/matches')}
-                className="px-4 py-2 rounded-lg bg-[#e63946] text-white font-bold hover:bg-[#c92d3b] transition text-sm"
-              >
-                عرض جميع المباريات
-              </button>
-            </div>
-            {fixturesLoading && <div>جاري التحميل...</div>}
-            {!fixturesLoading && filteredGroupedLeagues.length === 0 && <div>لا توجد مباريات اليوم</div>}
-            {!fixturesLoading && filteredGroupedLeagues.slice(0, 3).map(group => (
-              <div key={group.league.id} className="mb-4 xs:mb-6">
-                <LeagueHeader league={group.league} />
-                <div>
-                  {group.fixtures.slice(0, 5).map(fixture => (
-                    <React.Fragment key={fixture.fixture.id}>
-                      <div onClick={() => navigate(`/match/${fixture.fixture.id}`)} className="cursor-pointer">
-                        <MatchCard fixture={fixture} />
-                      </div>
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-            ))}
-            {!fixturesLoading && filteredGroupedLeagues.length > 3 && (
-              <div className="text-center text-gray-400 py-4">
-                عرض {filteredGroupedLeagues.slice(0, 3).reduce((acc, group) => acc + group.fixtures.slice(0, 5).length, 0)} من {filteredGroupedLeagues.reduce((acc, group) => acc + group.fixtures.length, 0)} مباراة
-              </div>
             )}
           </div>
         </section>
