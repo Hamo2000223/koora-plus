@@ -62,7 +62,6 @@ const TeamLineupTabs = ({ lineup }) => {
   );
 };
 
-
 const MatchDetailsPage = () => {
   const { id } = useParams();
   const {
@@ -75,26 +74,38 @@ const MatchDetailsPage = () => {
   } = useFootballStore();
   const [tab, setTab] = useState("details");
   const [fixture, setFixture] = useState(null);
+  const [hasFetchedDetails, setHasFetchedDetails] = useState(false);
 
-  // Fetch fixture details
+  // Fetch fixture details - only once when id changes
   useEffect(() => {
+    if (!id) return;
+    
     const fetchData = async () => {
       await fetchFixtures({ id });
     };
     fetchData();
   }, [id, fetchFixtures]);
 
-  // Set fixture from store
+  // Set fixture from store and fetch additional data - only once when fixture is found
   useEffect(() => {
-    if (fixtures?.response) {
-      const found = fixtures.response.find(f => String(f.fixture.id) === String(id));
-      setFixture(found || null);
-      if (found) {
-        fetchFixtureEvents(found.fixture.id);
-        fetchLineups(found.fixture.id);
-      }
+    if (!fixtures?.response || hasFetchedDetails) return;
+    
+    const found = fixtures.response.find(f => String(f.fixture.id) === String(id));
+    if (found) {
+      setFixture(found);
+      setHasFetchedDetails(true);
+      
+      // Fetch additional data only once
+      fetchFixtureEvents(found.fixture.id);
+      fetchLineups(found.fixture.id);
     }
-  }, [fixtures, id, fetchFixtureEvents, fetchLineups]);
+  }, [fixtures, id, fetchFixtureEvents, fetchLineups, hasFetchedDetails]);
+
+  // Reset fetch flag when id changes
+  useEffect(() => {
+    setHasFetchedDetails(false);
+    setFixture(null);
+  }, [id]);
 
   // Get events and lineups
   const eventsData = fixture ? fixtureEvents[fixture.fixture.id] : null;
@@ -170,8 +181,6 @@ const MatchDetailsPage = () => {
                 <div className="text-center text-gray-400">جاري تحميل التشكيلة...</div>
               ) : lineupError ? (
                 <div className="text-center text-red-400">{lineupError}</div>
-              ) : lineup && lineup.length > 1 ? (
-                <TeamLineupTabs lineup={lineup} />
               ) : lineup && lineup.length > 0 ? (
                 <TeamLineupTabs lineup={lineup} />
               ) : (

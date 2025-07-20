@@ -36,6 +36,192 @@ export const useFootballStore = create((set, get) => ({
     }
   },
 
+  // Players Search
+  playersSearch: null,
+  playersSearchLoading: false,
+  playersSearchError: null,
+  searchPlayers: async (searchTerm) => {
+    set({ playersSearchLoading: true, playersSearchError: null });
+    try {
+      const response = await footballApi.get('/players/profiles', { params: { search: searchTerm } });
+      set({ playersSearch: response.data, playersSearchLoading: false });
+    } catch (error) {
+      set({
+        playersSearchError: error.response?.data?.message || error.message || 'حدث خطأ أثناء البحث عن اللاعبين',
+        playersSearchLoading: false,
+      });
+    }
+  },
+
+  // Players by Team
+  players: null,
+  playersLoading: false,
+  playersError: null,
+  fetchPlayers: async (params = {}) => {
+    set({ playersLoading: true, playersError: null });
+    try {
+      const response = await footballApi.get('/players', { params });
+      set({ players: response.data, playersLoading: false });
+    } catch (error) {
+      set({
+        playersError: error.response?.data?.message || error.message || 'حدث خطأ أثناء جلب اللاعبين',
+        playersLoading: false,
+      });
+    }
+  },
+
+  // Player Seasons
+  playerSeasons: {}, // { [playerId]: { loading, error, seasons } }
+  fetchPlayerSeasons: async (playerId) => {
+    set((state) => ({
+      playerSeasons: {
+        ...state.playerSeasons,
+        [playerId]: { loading: true, error: null, seasons: null },
+      },
+    }));
+    try {
+      const response = await footballApi.get('/players/seasons', { params: { player: playerId } });
+      set((state) => ({
+        playerSeasons: {
+          ...state.playerSeasons,
+          [playerId]: { loading: false, error: null, seasons: response.data.response },
+        },
+      }));
+    } catch (error) {
+      set((state) => ({
+        playerSeasons: {
+          ...state.playerSeasons,
+          [playerId]: {
+            loading: false,
+            error: error.response?.data?.message || error.message || 'حدث خطأ أثناء جلب مواسم اللاعب',
+            seasons: null,
+          },
+        },
+      }));
+    }
+  },
+
+  // Player Statistics
+  playerStats: {}, // { [playerId]: { loading, error, stats } }
+  fetchPlayerStats: async (playerId, season = null, teamId = null) => {
+    const key = `${playerId}-${season}-${teamId}`;
+    set((state) => ({
+      playerStats: {
+        ...state.playerStats,
+        [key]: { loading: true, error: null, stats: null },
+      },
+    }));
+    try {
+      const params = { id: playerId };
+      if (season) params.season = season;
+      const response = await footballApi.get('/players', { params });
+      
+      // Filter by team if specified
+      let stats = response.data.response[0]?.statistics || [];
+      if (teamId) {
+        stats = stats.filter(stat => stat.team?.id === parseInt(teamId));
+      }
+      
+      set((state) => ({
+        playerStats: {
+          ...state.playerStats,
+          [key]: { loading: false, error: null, stats },
+        },
+      }));
+    } catch (error) {
+      set((state) => ({
+        playerStats: {
+          ...state.playerStats,
+          [key]: {
+            loading: false,
+            error: error.response?.data?.message || error.message || 'حدث خطأ أثناء جلب إحصائيات اللاعب',
+            stats: null,
+          },
+        },
+      }));
+    }
+  },
+
+  // Team Statistics
+  teamStats: {}, // { [teamId]: { loading, error, stats } }
+  fetchTeamStats: async (teamId, season = null, league = null) => {
+    const key = `${teamId}-${season}-${league}`;
+    set((state) => ({
+      teamStats: {
+        ...state.teamStats,
+        [key]: { loading: true, error: null, stats: null },
+      },
+    }));
+    try {
+      const params = { team: teamId };
+      if (season) params.season = season;
+      if (league) params.league = league;
+      
+      const response = await footballApi.get('/teams/statistics', { params });
+      
+      set((state) => ({
+        teamStats: {
+          ...state.teamStats,
+          [key]: { loading: false, error: null, stats: response.data.response },
+        },
+      }));
+    } catch (error) {
+      set((state) => ({
+        teamStats: {
+          ...state.teamStats,
+          [key]: {
+            loading: false,
+            error: error.response?.data?.message || error.message || 'حدث خطأ أثناء جلب إحصائيات الفريق',
+            stats: null,
+          },
+        },
+      }));
+    }
+  },
+
+  // Team Players
+  teamPlayers: {}, // { [teamId]: { loading, error, players } }
+  fetchTeamPlayers: async (teamId, season = null) => {
+    const key = `${teamId}-${season}`;
+    set((state) => ({
+      teamPlayers: {
+        ...state.teamPlayers,
+        [key]: { loading: true, error: null, players: null },
+      },
+    }));
+    try {
+      const params = { team: teamId };
+      if (season) params.season = season;
+      
+      // Try /players endpoint first
+      let response;
+      try {
+        response = await footballApi.get('/players', { params });
+      } catch {
+        // Fallback to /players/squads
+        response = await footballApi.get('/players/squads', { params });
+      }
+      
+      set((state) => ({
+        teamPlayers: {
+          ...state.teamPlayers,
+          [key]: { loading: false, error: null, players: response.data.response },
+        },
+      }));
+    } catch (error) {
+      set((state) => ({
+        teamPlayers: {
+          ...state.teamPlayers,
+          [key]: {
+            loading: false,
+            error: error.response?.data?.message || error.message || 'حدث خطأ أثناء جلب لاعبين الفريق',
+            players: null,
+          },
+        },
+      }));
+    }
+  },
+
   // Fixtures
   fixtures: null,
   fixturesLoading: false,
@@ -165,13 +351,13 @@ export const useFootballStore = create((set, get) => ({
   },
 
   // Player profiles/photos
-  players: {}, // { [playerId]: { loading, error, profile } }
+  playerProfiles: {}, // { [playerId]: { loading, error, profile } }
   fetchPlayerProfile: async (playerId) => {
-    const { players } = get();
-    if (players[playerId]?.profile) return players[playerId].profile; // Already cached
+    const { playerProfiles } = get();
+    if (playerProfiles[playerId]?.profile) return playerProfiles[playerId].profile; // Already cached
     set((state) => ({
-      players: {
-        ...state.players,
+      playerProfiles: {
+        ...state.playerProfiles,
         [playerId]: { loading: true, error: null, profile: null },
       },
     }));
@@ -179,16 +365,16 @@ export const useFootballStore = create((set, get) => ({
       const response = await footballApi.get('/players/profiles', { params: { player: playerId } });
       const profile = response.data?.response?.[0]?.player;
       set((state) => ({
-        players: {
-          ...state.players,
+        playerProfiles: {
+          ...state.playerProfiles,
           [playerId]: { loading: false, error: null, profile },
         },
       }));
       return profile;
     } catch (error) {
       set((state) => ({
-        players: {
-          ...state.players,
+        playerProfiles: {
+          ...state.playerProfiles,
           [playerId]: {
             loading: false,
             error: error.response?.data?.message || error.message || 'حدث خطأ أثناء جلب بيانات اللاعب',

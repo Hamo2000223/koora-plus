@@ -1,10 +1,12 @@
-import { BarChart3, ChevronDown, Home, Info, Newspaper, Phone, Star } from 'lucide-react';
+import { BarChart3, ChevronDown, Home, Info, Newspaper, Phone, Shield, Star, Users } from 'lucide-react';
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
   const [infoOpen, setInfoOpen] = useState(false);
+  const [dataOpen, setDataOpen] = useState(false);
   const infoRef = useRef(null);
+  const dataRef = useRef(null);
   const location = useLocation();
 
   // Close dropdown on outside click
@@ -13,10 +15,13 @@ const Header = () => {
       if (infoRef.current && !infoRef.current.contains(e.target)) {
         setInfoOpen(false);
       }
+      if (dataRef.current && !dataRef.current.contains(e.target)) {
+        setDataOpen(false);
+      }
     }
-    if (infoOpen) document.addEventListener("mousedown", handleClick);
+    if (infoOpen || dataOpen) document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [infoOpen]);
+  }, [infoOpen, dataOpen]);
 
   const navLinks = [
     { to: "/", label: "الرئيسية", icon: <Home size={18} />, active: location.pathname === "/" },
@@ -44,6 +49,42 @@ const Header = () => {
               {link.label}
             </Link>
           ))}
+          
+          {/* البيانات Dropdown */}
+          <div className="relative" ref={dataRef}>
+            <button
+              className={`flex items-center gap-2 text-white hover:text-yellow-400 text-sm xs:text-base md:text-lg px-4 py-2 rounded-xl transition bg-[#23272f] ${dataOpen ? 'ring-2 ring-yellow-400' : ''}`}
+              onClick={() => setDataOpen(v => !v)}
+              aria-haspopup="true"
+              aria-expanded={dataOpen}
+              type="button"
+            >
+              <Users size={18} />
+              البيانات
+              <ChevronDown size={18} className={`transition-transform ${dataOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {dataOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-[#23272f] rounded-2xl shadow-lg border border-[#23272f] overflow-hidden z-50 animate-fade-in">
+                <Link
+                  to="/players"
+                  className={`flex items-center justify-between gap-2 px-4 py-3 text-white hover:bg-[#333] text-right text-base border-b border-[#181818] transition ${location.pathname === '/players' ? 'bg-[#333] text-yellow-300' : ''}`}
+                  onClick={() => setDataOpen(false)}
+                >
+                  اللاعبين
+                  <Users size={18} />
+                </Link>
+                <Link
+                  to="/teams"
+                  className={`flex items-center justify-between gap-2 px-4 py-3 text-white hover:bg-[#333] text-right text-base transition ${location.pathname === '/teams' ? 'bg-[#333] text-yellow-300' : ''}`}
+                  onClick={() => setDataOpen(false)}
+                >
+                  الفرق
+                  <Shield size={18} />
+                </Link>
+              </div>
+            )}
+          </div>
+
           {/* معلومات Dropdown */}
           <div className="relative" ref={infoRef}>
             <button

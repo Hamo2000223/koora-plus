@@ -1,38 +1,43 @@
 import React, { useEffect } from "react";
 import { useFootballStore } from "../../store/football";
-import DefaultPlayerIcon from "./DefaultPlayerIcon";
 
 const InlineFieldView = ({ startXI, formation }) => {
-  const { players, fetchPlayerProfile } = useFootballStore();
+  const { playerProfiles, fetchPlayerProfile } = useFootballStore();
 
+  // Fetch missing player photos - only run once when startXI changes
   useEffect(() => {
     if (!startXI) return;
-    let idsToFetch = [];
+    
+    const idsToFetch = [];
     for (const p of startXI) {
       if (
         !p.player.photo &&
         p.player.id &&
-        (!players[p.player.id] || (!players[p.player.id].profile && !players[p.player.id].loading))
+        (!playerProfiles || !playerProfiles[p.player.id] || (!playerProfiles[p.player.id].profile && !playerProfiles[p.player.id].loading))
       ) {
         idsToFetch.push(p.player.id);
       }
     }
+    
+    // Fetch all missing player profiles at once
     if (idsToFetch.length > 0) {
       idsToFetch.forEach((id) => {
         fetchPlayerProfile(id);
       });
     }
-    // eslint-disable-next-line
-  }, [startXI, formation]);
+  }, [startXI, fetchPlayerProfile, playerProfiles]); // Added playerProfiles back since we need to check it
 
   if (!startXI || startXI.length === 0) return null;
+  
   let formationArr = [];
   if (formation && /^\d+(?:-\d+)+$/.test(formation)) {
     formationArr = formation.split('-').map(Number);
   }
+  
   const gk = startXI.filter(p => p.player.pos === 'G');
   let outfield = startXI.filter(p => p.player.pos !== 'G');
   let lines = [];
+  
   if (formationArr.length > 0 && outfield.length === formationArr.reduce((a, b) => a + b, 0)) {
     let idx = 0;
     lines = [gk];
@@ -62,27 +67,28 @@ const InlineFieldView = ({ startXI, formation }) => {
         {/* Players */}
         <div className="relative z-20 flex flex-col justify-between h-full w-full py-6">
           {lines.map((line, i) => (
-            
             <div key={i} className="flex justify-center gap-8 mb-4 last:mb-0 first:mt-4">
               {line.map((p, j) => {
                 let photo = p.player.photo;
-                if (!photo && p.player.id && players[p.player.id]?.profile?.photo) {
-                  photo = players[p.player.id].profile.photo;
+                if (!photo && p.player.id && playerProfiles && playerProfiles[p.player.id]?.profile?.photo) {
+                  photo = playerProfiles[p.player.id].profile.photo;
                 }
-                if (!photo) photo = '/default-player.png';
+                if (!photo) photo = '/default-player.svg';
+                
                 return (
                   <div key={p.player.id || p.player.name || j} className="flex flex-col items-center relative group">
-                    
                     {/* Player photo */}
                     <div className="w-16 h-16 rounded-full border-2 border-white shadow-lg overflow-hidden bg-gray-300 flex items-center justify-center">
-                      {photo && photo !== '/default-player.png' ? (
+                      {photo && photo !== '/default-player.svg' ? (
                         <img src={photo} alt={p.player.name} className="w-full h-full object-cover" />
                       ) : (
-                        <DefaultPlayerIcon />
+                        <img src="/default-player.svg" alt={p.player.name} className="w-full h-full object-cover" />
                       )}
                     </div>
                     {/* Player number and name */}
-                    <span className="text-xs text-white font-bold mt-1 drop-shadow text-center">{p.player.number} {p.player.name.split(' ')[0]}</span>
+                    <span className="text-xs text-white font-bold mt-1 drop-shadow text-center">
+                      {p.player.number} {p.player.name ? p.player.name.split(' ')[0] : 'Unknown'}
+                    </span>
                   </div>
                 );
               })}

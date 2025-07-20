@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LoadingComponent from "../components/LoadingComponent";
 import { useFootballStore } from "../store/football.js";
 
 const PAGE_SIZE = 12;
@@ -32,6 +33,11 @@ const Tournaments = () => {
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
+  // Show loading component for initial data loading
+  if (loading && !leagues) {
+    return <LoadingComponent />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-[#181818] text-white font-sans" dir="rtl">
       <main className="flex-1 flex flex-col items-center px-2 xs:px-4 py-4 xs:py-8">
@@ -50,7 +56,7 @@ const Tournaments = () => {
             />
           </div>
           {loading ? (
-            <div className="text-center text-gray-400 py-8">جاري تحميل البطولات...</div>
+            <LoadingComponent />
           ) : (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
