@@ -31,11 +31,11 @@ const Header = () => {
   ];
 
   return (
-    <header className="w-full bg-[#181818] border-b border-gray-800" dir="rtl">
+    <header className="w-full bg-black" dir="rtl">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between py-2 px-2 sm:px-4">
         {/* Logo only, maximized, linked to home with animation */}
         <Link to="/" className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition-all duration-300 hover:scale-105 mb-2 sm:mb-0">
-          <img src="/logo.svg" alt="logo" className="h-12 xs:h-16 sm:h-20 md:h-24 w-auto" />
+          <img src="/logo.svg" alt="logo" className="h-8 w-auto" />
         </Link>
         {/* Navigation */}
         <nav className="flex flex-wrap gap-2 xs:gap-4 sm:gap-6 md:gap-8 text-base xs:text-lg font-medium justify-center sm:justify-end items-center">
@@ -43,7 +43,7 @@ const Header = () => {
             <Link
               key={link.to}
               to={link.to}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition bg-[#23272f] text-white hover:text-yellow-400 hover:bg-[#333] text-sm xs:text-base md:text-lg ${link.active ? 'ring-2 ring-yellow-400' : ''}`}
+              className={`flex items-center gap-2 px-3 py-1.5 transition text-white hover:text-[#ffd800] text-sm ${link.active ? 'text-[#ffd800]' : ''}`}
             >
               {link.icon}
               {link.label}
@@ -53,7 +53,7 @@ const Header = () => {
           {/* البيانات Dropdown */}
           <div className="relative" ref={dataRef}>
             <button
-              className={`flex items-center gap-2 text-white hover:text-yellow-400 text-sm xs:text-base md:text-lg px-4 py-2 rounded-xl transition bg-[#23272f] ${dataOpen ? 'ring-2 ring-yellow-400' : ''}`}
+              className={`flex items-center gap-2 text-white hover:text-[#ffd800] text-sm px-3 py-1.5 transition ${dataOpen ? 'text-[#ffd800]' : ''}`}
               onClick={() => setDataOpen(v => !v)}
               aria-haspopup="true"
               aria-expanded={dataOpen}
@@ -64,10 +64,10 @@ const Header = () => {
               <ChevronDown size={18} className={`transition-transform ${dataOpen ? 'rotate-180' : ''}`} />
             </button>
             {dataOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-[#23272f] rounded-2xl shadow-lg border border-[#23272f] overflow-hidden z-50 animate-fade-in">
+              <div className="absolute right-0 mt-2 w-48 bg-black shadow-lg overflow-hidden z-50 animate-fade-in">
                 <Link
                   to="/players"
-                  className={`flex items-center justify-between gap-2 px-4 py-3 text-white hover:bg-[#333] text-right text-base border-b border-[#181818] transition ${location.pathname === '/players' ? 'bg-[#333] text-yellow-300' : ''}`}
+                  className={`flex items-center justify-between gap-2 px-4 py-2 text-white hover:bg-zinc-900 text-right text-sm transition ${location.pathname === '/players' ? 'bg-zinc-900 text-[#ffd800]' : ''}`}
                   onClick={() => setDataOpen(false)}
                 >
                   اللاعبين
@@ -75,7 +75,7 @@ const Header = () => {
                 </Link>
                 <Link
                   to="/teams"
-                  className={`flex items-center justify-between gap-2 px-4 py-3 text-white hover:bg-[#333] text-right text-base transition ${location.pathname === '/teams' ? 'bg-[#333] text-yellow-300' : ''}`}
+                  className={`flex items-center justify-between gap-2 px-4 py-2 text-white hover:bg-zinc-900 text-right text-sm transition ${location.pathname === '/teams' ? 'bg-zinc-900 text-[#ffd800]' : ''}`}
                   onClick={() => setDataOpen(false)}
                 >
                   الفرق
@@ -88,7 +88,7 @@ const Header = () => {
           {/* معلومات Dropdown */}
           <div className="relative" ref={infoRef}>
             <button
-              className={`flex items-center gap-2 text-white hover:text-yellow-400 text-sm xs:text-base md:text-lg px-4 py-2 rounded-xl transition bg-[#23272f] ${infoOpen ? 'ring-2 ring-yellow-400' : ''}`}
+              className={`flex items-center gap-2 text-white hover:text-[#ffd800] text-sm px-3 py-1.5 transition ${infoOpen ? 'text-[#ffd800]' : ''}`}
               onClick={() => setInfoOpen(v => !v)}
               aria-haspopup="true"
               aria-expanded={infoOpen}
@@ -99,10 +99,10 @@ const Header = () => {
               <ChevronDown size={18} className={`transition-transform ${infoOpen ? 'rotate-180' : ''}`} />
             </button>
             {infoOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-[#23272f] rounded-2xl shadow-lg border border-[#23272f] overflow-hidden z-50 animate-fade-in">
+              <div className="absolute right-0 mt-2 w-48 bg-black shadow-lg overflow-hidden z-50 animate-fade-in">
                 <Link
                   to="/about"
-                  className={`flex items-center justify-between gap-2 px-4 py-3 text-white hover:bg-[#333] text-right text-base border-b border-[#181818] transition ${location.pathname === '/about' ? 'bg-[#333] text-yellow-300' : ''}`}
+                  className={`flex items-center justify-between gap-2 px-4 py-2 text-white hover:bg-zinc-900 text-right text-sm transition ${location.pathname === '/about' ? 'bg-zinc-900 text-[#ffd800]' : ''}`}
                   onClick={() => setInfoOpen(false)}
                 >
                   من نحن
@@ -110,7 +110,7 @@ const Header = () => {
                 </Link>
                 <Link
                   to="/contact"
-                  className={`flex items-center justify-between gap-2 px-4 py-3 text-white hover:bg-[#333] text-right text-base transition ${location.pathname === '/contact' ? 'bg-[#333] text-yellow-300' : ''}`}
+                  className={`flex items-center justify-between gap-2 px-4 py-2 text-white hover:bg-zinc-900 text-right text-sm transition ${location.pathname === '/contact' ? 'bg-zinc-900 text-[#ffd800]' : ''}`}
                   onClick={() => setInfoOpen(false)}
                 >
                   اتصل بنا
@@ -125,4 +125,4 @@ const Header = () => {
   );
 };
 
-export default Header; 
+export default Header;
